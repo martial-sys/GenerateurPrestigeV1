@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Portfolio Prestige</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style-generateur.css">
+</head>
+<body>
+    <div class="main-container">
+        <div id="control-panel">
+            <header class="panel-header">
+                <div class="logo-section">
+                    <img src="https://i.postimg.cc/5yKLf0sf/Mon-Logo.png" alt="Logo" class="generator-logo">
+                    <div class="header-text">
+                        <h1>Générateur Prestige</h1>
+                        <p>Créez un portfolio professionnel en quelques minutes</p>
+                    </div>
+                </div>
+            </header>
+            <main class="form-container">
+                <div class="accordion">
+                    <div class="accordion-item active">
+                        <button class="accordion-header" type="button">
+                            <span class="accordion-number">1</span><span class="accordion-title">Identité & Héro</span><i class="fas fa-chevron-down accordion-icon"></i>
+                        </button>
+                        <div class="accordion-body">
+                            <div class="form-group"><label for="nomComplet">Nom Complet <span class="required">*</span></label><input type="text" id="nomComplet" placeholder="Ex: Amina Koné" required><span class="error-message"></span></div>
+                            <div class="form-group"><label for="titre">Titre / Poste <span class="required">*</span></label><input type="text" id="titre" placeholder="Ex: Stratège en Contenu Digital" required><span class="error-message"></span></div>
+                            <div class="form-group"><label for="accroche">Phrase d'accroche</label><textarea id="accroche" rows="3" placeholder="Ex: Je construis des ponts..."></textarea></div>
+                            <div class="form-group"><label for="logo">URL de votre Logo <span class="required">*</span></label><input type="url" id="logo" placeholder="https://..." required><span class="error-message"></span></div>
+                            <div class="form-group"><label for="photoProfil">URL Photo de Profil <span class="required">*</span></label><input type="url" id="photoProfil" placeholder="https://..." required><span class="error-message"></span></div>
+                        </div>
+                    </div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">2</span><span class="accordion-title">À Propos</span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div class="form-group"><label for="aboutTitre">Titre de la section</label><input type="text" id="aboutTitre" placeholder="Ex: Mon histoire, ma passion"></div><div class="form-group"><label for="aboutP">Description <span class="required">*</span></label><textarea id="aboutP" rows="5" placeholder="Décrivez votre parcours..." required></textarea><span class="error-message"></span></div></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">3</span><span class="accordion-title">Compétences <span class="required">*</span></span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div id="skills-repeater" class="repeater-container"></div><button id="add-skill" class="btn-add-block" type="button"><i class="fas fa-plus"></i> Ajouter une compétence</button><span class="error-message" id="skills-error"></span></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">4</span><span class="accordion-title">Projets <span class="required">*</span></span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div id="projects-repeater" class="repeater-container"></div><button id="add-project" class="btn-add-block" type="button"><i class="fas fa-plus"></i> Ajouter un projet</button><span class="error-message" id="projects-error"></span></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">5</span><span class="accordion-title">Témoignages</span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div id="testimonials-repeater" class="repeater-container"></div><button id="add-testimonial" class="btn-add-block" type="button"><i class="fas fa-plus"></i></button></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">5</span><span class="accordion-title">Contact <span class="required">*</span></span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div class="form-group"><label for="contactIntro">Texte d'introduction</label><textarea id="contactIntro" rows="3" placeholder="Ex: Un projet, une question ?"></textarea></div><div class="form-group"><label for="whatsapp"><i class="fab fa-whatsapp"></i> Numéro WhatsApp</label><input type="tel" id="whatsapp" placeholder="Ex: 22891234567"><span class="error-message"></span></div><div class="form-group"><label for="email"><i class="fas fa-envelope"></i> Adresse Email</label><input type="email" id="email" placeholder="Ex: contact@votrenom.com"><span class="error-message" id="contact-error"></span></div></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">6</span><span class="accordion-title">Réseaux Sociaux</span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div class="form-group"><label>Ajoutez vos réseaux :</label><div class="social-picker"><button class="social-btn" data-social="facebook" type="button"><i class="fab fa-facebook-f"></i> Facebook</button><button class="social-btn" data-social="instagram" type="button"><i class="fab fa-instagram"></i> Instagram</button><button class="social-btn" data-social="linkedin" type="button"><i class="fab fa-linkedin-in"></i> LinkedIn</button><button class="social-btn" data-social="tiktok" type="button"><i class="fab fa-tiktok"></i> TikTok</button></div></div><div class="social-inputs-container"><div class="social-input-wrapper" id="wrapper-facebook" style="display: none;"><div class="form-group"><label for="facebook"><i class="fab fa-facebook-f"></i> Lien Facebook</label><input type="url" id="facebook" placeholder="https://facebook.com/votrepage"></div></div><div class="social-input-wrapper" id="wrapper-instagram" style="display: none;"><div class="form-group"><label for="instagram"><i class="fab fa-instagram"></i> Lien Instagram</label><input type="url" id="instagram" placeholder="https://instagram.com/votreprofil"></div></div><div class="social-input-wrapper" id="wrapper-linkedin" style="display: none;"><div class="form-group"><label for="linkedin"><i class="fab fa-linkedin-in"></i> Lien LinkedIn</label><input type="url" id="linkedin" placeholder="https://linkedin.com/in/votreprofil"></div></div><div class="social-input-wrapper" id="wrapper-tiktok" style="display: none;"><div class="form-group"><label for="tiktok"><i class="fab fa-tiktok"></i> Lien TikTok</label><input type="url" id="tiktok" placeholder="https://tiktok.com/@votreprofil"></div></div></div></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">7</span><span class="accordion-title">Thèmes & Couleurs</span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div class="form-group"><label>Choisissez une palette de couleurs</label><div class="theme-picker"><div class="theme-swatch active" data-theme="default" title="Bleu Prestige"></div><div class="theme-swatch" data-theme="foret" title="Vert Forêt"></div><div class="theme-swatch" data-theme="ocean" title="Bleu Océan"></div><div class="theme-swatch" data-theme="corail" title="Orange Corail"></div><div class="theme-swatch" data-theme="luxe" title="Noir & Gris"></div><div class="theme-swatch" data-theme="energie" title="Jaune Énergie"></div><div class="theme-swatch" data-theme="rose" title="Rose Poudré"></div><div class="theme-swatch" data-theme="violet" title="Violet Royal"></div></div></div></div></div>
+                    <div class="accordion-item"><button class="accordion-header" type="button"><span class="accordion-number">8</span><span class="accordion-title">SEO & Référencement</span><i class="fas fa-chevron-down accordion-icon"></i></button><div class="accordion-body"><div class="form-group"><label for="titrePage">Titre de la page</label><input type="text" id="titrePage" placeholder="Ex: Amina Koné - Stratège Digital"></div><div class="form-group"><label for="metaDescription">Description pour Google</label><textarea id="metaDescription" rows="3" placeholder="Description courte pour les moteurs de recherche"></textarea></div><div class="form-group"><label for="ogImage">Image de partage social</label><input type="url" id="ogImage" placeholder="URL de l'image pour le partage"><span class="error-message"></span></div></div></div>
+                </div>
+            </main>
+            <footer class="panel-footer">
+                <button id="preview-btn" class="btn-secondary" type="button"><i class="fas fa-eye"></i> Aperçu</button>
+                <div class="download-wrapper">
+                    <button id="download-btn" class="btn-primary" disabled type="button"><i class="fas fa-download"></i> Télécharger</button>
+                    <div class="validation-tooltip">Remplissez tous les champs obligatoires (*)</div>
+                </div>
+            </footer>
+        </div>
+        <div id="preview-panel"><iframe title="Aperçu du Portfolio"></iframe></div>
+    </div>
+<div id="success-modal" class="modal-overlay">
+    <div class="modal-content">
+        <button id="close-modal-btn" class="close-modal" aria-label="Fermer" type="button">×</button>
+        <div class="modal-icon">🎉</div>
+        <h2>Mission Accomplie !</h2>
+        <p>Votre portfolio a été généré et téléchargé sous le nom <strong>index.html</strong>.</p>
+        <p>La dernière étape est de le mettre en ligne. Suivez notre guide vidéo pour déployer votre site en moins de 5 minutes.</p>
+        <a href="https://www.youtube.com/" target="_blank" id="hosting-guide-btn" class="btn-primary-modal">
+            <i class="fas fa-play-circle"></i> Voir le Guide d'Hébergement
+        </a>
+    </div>
+</div>
+
+</div>
+
+    <button id="mobile-toggle" class="mobile-toggle" type="button"><i class="fas fa-eye"></i> <span>Aperçu</span></button>
+    
+    <script src="script-generateur.js"></script>
+</body>
+</html>
