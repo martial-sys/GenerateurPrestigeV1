@@ -9,6 +9,22 @@
     <link rel="stylesheet" href="style-generateur.css">
 </head>
 <body>
+	
+	    <div id="security-overlay">
+        <div class="security-box">
+            <img src="https://i.postimg.cc/5yKLf0sf/Mon-Logo.png" alt="Logo" class="security-logo">
+            <h2>Accès Réservé</h2>
+            <p>Veuillez entrer votre code d'accès pour déverrouiller le Générateur.</p>
+            <div class="security-form">
+                <input type="password" id="access-code-input" placeholder="Votre code d'accès...">
+                <button id="access-code-btn" type="button">Déverrouiller</button>
+            </div>
+            <p id="security-error" class="error-message"></p>
+        </div>
+    </div>
+
+	
+	
     <div class="main-container">
         <div id="control-panel">
             <header class="panel-header">

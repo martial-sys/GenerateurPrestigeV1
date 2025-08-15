@@ -4,6 +4,48 @@
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+	
+	    // [ARCHITECTE] DÉBUT DE L'AJOUT : SYSTÈME DE SÉCURITÉ ET VALIDATION D'URL
+    const ACCESS_CODE = 'CAPITAL2025';
+    
+    function setupSecurity() {
+        const overlay = document.getElementById('security-overlay');
+        const input = document.getElementById('access-code-input');
+        const btn = document.getElementById('access-code-btn');
+        const errorMsg = document.getElementById('security-error');
+
+        if (localStorage.getItem('generator_access_granted') === 'true') {
+            overlay.classList.add('hidden');
+            return;
+        }
+        
+        const checkCode = () => {
+            if (input.value === ACCESS_CODE) {
+                localStorage.setItem('generator_access_granted', 'true');
+                overlay.classList.add('hidden');
+            } else {
+                errorMsg.textContent = 'Code d\'accès incorrect.';
+                input.value = '';
+            }
+        };
+
+        btn.addEventListener('click', checkCode);
+        input.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') checkCode();
+        });
+    }
+
+    function isValidUrl(string) {
+        if (!string || string.trim() === '') return true; // Un champ vide est valide
+        try {
+            new URL(string);
+            return string.trim().startsWith('http');
+        } catch (_) {
+            return false;  
+        }
+    }
+    // [ARCHITECTE] FIN DE L'AJOUT
+    
 
     // =================================================================
     // SECTION DE L'ARCHITECTE : MOTEUR DU GÉNÉRATEUR
@@ -78,74 +120,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const debouncedEnvoyerDonnees = debounce(envoyerDonneesALiframe);
     
-    // [ARCHITECTE V10.0] Version améliorée de la fonction de validation
-    function validerFormulaire() {
-        let estValide = true;
+    // [ARCHITECTE V10.1] Version finale et corrigée de la fonction de validation
+function validerFormulaire() {
+    let estValide = true;
+    
+    const afficherErreur = (id, message) => {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const formGroup = input.closest('.form-group') || input.closest('.repeater-container')?.parentElement;
+        if (!formGroup) return;
+        const errorMessageElement = formGroup.querySelector('.error-message');
         
-        const afficherErreur = (id, message) => {
-            const input = document.getElementById(id);
-            if (!input) return;
-            const formGroup = input.closest('.form-group') || input.closest('.repeater-container')?.parentElement;
-            if (!formGroup) return;
-            const errorMessageElement = formGroup.querySelector('.error-message');
-            
-            formGroup.classList.add('has-error');
-            if (errorMessageElement) {
-                errorMessageElement.textContent = message;
-            }
-            estValide = false;
-        };
-
-        const effacerErreurs = () => {
-            document.querySelectorAll('.form-group.has-error').forEach(el => el.classList.remove('has-error'));
-            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-        };
-        
-        effacerErreurs();
-
-        const champsTexteRequis = {
-            'nomComplet': "Le nom complet est obligatoire.",
-            'titre': "Le titre/poste est obligatoire.",
-            'logo': "L'URL du logo est obligatoire.",
-            'photoProfil': "L'URL de la photo de profil est obligatoire.",
-            'aboutP': "La description 'À Propos' est obligatoire."
-        };
-
-        for (const id in champsTexteRequis) {
-            const input = document.getElementById(id);
-            if (!input || input.value.trim() === '') {
-                afficherErreur(id, champsTexteRequis[id]);
-            }
+        formGroup.classList.add('has-error');
+        if (errorMessageElement) {
+            errorMessageElement.textContent = message;
         }
+        estValide = false;
+    };
 
-        const champsUrl = ['logo', 'photoProfil', 'ogImage', 'facebook', 'instagram', 'linkedin', 'tiktok'];
-        champsUrl.forEach(id => {
-            const input = document.getElementById(id);
-            if (input && input.value.trim() !== '' && !input.value.trim().startsWith('http')) {
-                afficherErreur(id, "L'URL doit commencer par http:// ou https://");
-            }
-        });
-        
-        const whatsappInput = document.getElementById('whatsapp');
-        const emailInput = document.getElementById('email');
-        if (whatsappInput.value.trim() === '' && emailInput.value.trim() === '') {
-            afficherErreur('email', "Vous devez renseigner au moins un contact (WhatsApp ou Email).");
-        }
-        if (emailInput.value.trim() !== '' && !emailInput.value.includes('@')) {
-            afficherErreur('email', "L'adresse email semble invalide.");
-        }
-        
-        if (portfolioData.skills.length === 0) {
-            document.getElementById('skills-error').textContent = "Vous devez ajouter au moins une catégorie de compétence.";
-            estValide = false;
-        }
-        if (portfolioData.projects.length === 0) {
-            document.getElementById('projects-error').textContent = "Vous devez ajouter au moins un projet.";
-            estValide = false;
-        }
+    const effacerErreurs = () => {
+        document.querySelectorAll('.form-group.has-error').forEach(el => el.classList.remove('has-error'));
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    };
+    
+    effacerErreurs();
 
-        return estValide;
+    const champsTexteRequis = {
+        'nomComplet': "Le nom complet est obligatoire.",
+        'titre': "Le titre/poste est obligatoire.",
+        'logo': "L'URL du logo est obligatoire.",
+        'photoProfil': "L'URL de la photo de profil est obligatoire.",
+        'aboutP': "La description 'À Propos' est obligatoire."
+    };
+
+    for (const id in champsTexteRequis) {
+        const input = document.getElementById(id);
+        if (!input || input.value.trim() === '') {
+            afficherErreur(id, champsTexteRequis[id]);
+        }
     }
+
+    // [ARCHITECTE - CORRECTION] Utilisation de la fonction isValidUrl pour une validation plus robuste.
+    const champsUrl = ['logo', 'photoProfil', 'ogImage', 'facebook', 'instagram', 'linkedin', 'tiktok'];
+    champsUrl.forEach(id => {
+        const input = document.getElementById(id);
+        if (input && input.value.trim() !== '' && !isValidUrl(input.value.trim())) {
+            afficherErreur(id, "L'URL doit être valide et commencer par http:// ou https://");
+        }
+    });
+    
+    const whatsappInput = document.getElementById('whatsapp');
+    const emailInput = document.getElementById('email');
+    if (whatsappInput.value.trim() === '' && emailInput.value.trim() === '') {
+        // [ARCHITECTE - CORRECTION] Affiche l'erreur sur les DEUX champs pour une meilleure UX.
+        afficherErreur('email', "Vous devez renseigner au moins un contact (WhatsApp ou Email).");
+        afficherErreur('whatsapp', "Vous devez renseigner au moins un contact (WhatsApp ou Email).");
+    }
+    if (emailInput.value.trim() !== '' && !emailInput.value.includes('@')) {
+        afficherErreur('email', "L'adresse email semble invalide.");
+    }
+    
+    // [ARCHITECTE - CORRECTION] Ajout du nettoyage des messages d'erreur quand la condition est remplie.
+    if (portfolioData.skills.length === 0) {
+        document.getElementById('skills-error').textContent = "Vous devez ajouter au moins une catégorie de compétence.";
+        estValide = false;
+    } else {
+        document.getElementById('skills-error').textContent = "";
+    }
+    if (portfolioData.projects.length === 0) {
+        document.getElementById('projects-error').textContent = "Vous devez ajouter au moins un projet.";
+        estValide = false;
+    } else {
+        document.getElementById('projects-error').textContent = "";
+    }
+
+    return estValide;
+}
+
 
     // [ARCHITECTE V10.0] Fonctions de mise à jour modifiées pour intégrer le drapeau de modification
     function mettreAJourEtValider(instantane = false) {
@@ -238,27 +289,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupProjectsLogic() {
-        addProjectButton.addEventListener('click', () => {
-            portfolioData.projects.push({ id: `project_${Date.now()}`, title: '', description: '', image: '', link: '' });
+    addProjectButton.addEventListener('click', () => {
+        portfolioData.projects.push({ id: `project_${Date.now()}`, title: '', description: '', image: '', link: '' });
+        renderProjects();
+        mettreAJourEtValider(true);
+    });
+    projectsRepeater.addEventListener('click', (event) => {
+        if (event.target.classList.contains('btn-supprimer-projet')) {
+            portfolioData.projects = portfolioData.projects.filter(p => p.id !== event.target.dataset.id);
             renderProjects();
             mettreAJourEtValider(true);
-        });
-        projectsRepeater.addEventListener('click', (event) => {
-            if (event.target.classList.contains('btn-supprimer-projet')) {
-                portfolioData.projects = portfolioData.projects.filter(p => p.id !== event.target.dataset.id);
-                renderProjects();
-                mettreAJourEtValider(true);
+        }
+    });
+    // [ARCHITECTE - CORRECTION] La logique de validation est maintenant appliquée EN TEMPS RÉEL.
+    projectsRepeater.addEventListener('input', (event) => {
+        const { id, field } = event.target.dataset;
+        const project = portfolioData.projects.find(p => p.id === id);
+        if (project) {
+            const value = event.target.value;
+            // Si le champ est un lien ou une image, on valide l'URL avant de mettre à jour les données de l'aperçu.
+            if (field === 'link' || field === 'image') {
+                project[field] = isValidUrl(value) ? value : '';
+            } else {
+                project[field] = value;
             }
-        });
-        projectsRepeater.addEventListener('input', (event) => {
-            const { id, field } = event.target.dataset;
-            const project = portfolioData.projects.find(p => p.id === id);
-            if (project) {
-                project[field] = event.target.value;
-                mettreAJourEtValider();
-            }
-        });
-    }
+            mettreAJourEtValider();
+        }
+    });
+}
+
 
     function renderProjects() {
         projectsRepeater.innerHTML = '';
@@ -314,31 +373,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function setupSocialMediaLogic() {
-        socialPicker.addEventListener('click', (event) => {
-            const button = event.target.closest('.social-btn');
-            if (!button) return;
-            const socialName = button.dataset.social;
-            const wrapper = document.getElementById(`wrapper-${socialName}`);
-            const input = document.getElementById(socialName);
-            const isActive = button.classList.toggle('active');
-            if (isActive) {
-                wrapper.style.display = 'block';
-                portfolioData[socialName] = input.value || '';
-            } else {
-                wrapper.style.display = 'none';
-                input.value = '';
-                delete portfolioData[socialName];
-            }
-            mettreAJourEtValider(true);
-        });
-        socialInputsContainer.addEventListener('input', (event) => {
-            const input = event.target;
-            if (input.type === 'url' && portfolioData.hasOwnProperty(input.id)) {
-                portfolioData[input.id] = input.value;
-                mettreAJourEtValider();
-            }
-        });
-    }
+    socialPicker.addEventListener('click', (event) => {
+        const button = event.target.closest('.social-btn');
+        if (!button) return;
+        const socialName = button.dataset.social;
+        const wrapper = document.getElementById(`wrapper-${socialName}`);
+        const input = document.getElementById(socialName);
+        
+        const isActive = button.classList.toggle('active');
+        if (isActive) {
+            wrapper.style.display = 'block';
+            portfolioData[socialName] = isValidUrl(input.value) ? input.value : '';
+        } else {
+            wrapper.style.display = 'none';
+            input.value = '';
+            delete portfolioData[socialName];
+        }
+        mettreAJourEtValider(true);
+    });
+    // [ARCHITECTE - CORRECTION] La logique de validation est maintenant appliquée EN TEMPS RÉEL.
+    socialInputsContainer.addEventListener('input', (event) => {
+        const input = event.target;
+        if (input.type === 'url' && portfolioData.hasOwnProperty(input.id)) {
+            const value = input.value;
+            portfolioData[input.id] = isValidUrl(value) ? value : '';
+            mettreAJourEtValider();
+        }
+    });
+}
+
 
     function setupThemePickerLogic() {
         themePicker.addEventListener('click', (event) => {
@@ -403,7 +466,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function init() {
+    async function init() {        
+     setupSecurity(); // [ARCHITECTE] Appel de la fonction de sécurité
+    
         console.log("Initialisation du Générateur Prestige (Version Finale de Lancement)...");
         injecterCSSModale();
         await injecterTemplateDansIframe();
